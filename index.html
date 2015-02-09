@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Баллы</title>
+<script src="js/jquery.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/jquery.ui.datepicker-ru.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/function.js"></script>
+<link href="css/jquery-ui.css" rel="stylesheet">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+</head>
+
+<body>
+<!--Навигация-->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Учет баллов v 1.6</a>
+			<p id="total_s" class="navbar-text"></p>
+		</div>
+   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+		<ul id="tabs" class="nav navbar-nav" data-tabs="tabs">
+			<li class="active"><a href="#work_order_tab" data-toggle="tab">Наряды</a></li>
+			<li data-id="settings"><a href="#technology_tab" data-toggle="tab">Технологии</a></li>
+			<li data-id="settings"><a href="#scores_tab" data-toggle="tab">Баллы</a></li>
+			<li data-id="settings"><a href="#settings_tab" data-toggle="tab">Настройки</a></li>
+		</ul>
+   </div>	</div>
+	</nav>	
+<!--Конец Навигация-->
+
+<!--Вверх-->
+    <div class="page-header">
+    </div>
+<!--Конец Вверх-->
+
+<!--Контент-->
+    <div class="container" role="main">
+		<div id="my-tab-content" class="tab-content">
+			<div class="tab-pane active" id="work_order_tab">
+				<button id="add_work" type="button" class="btn btn-primary">Добавить</button>
+				<p></p>
+					<table id="work" class="table table-bordered">
+						<thead>
+							<tr>
+								<th width="100px">Дата</th>
+								<th width="50px">Л.С</th>
+								<th>Вид работ</th>
+								<th width="30px">Балы</th>
+								<th width="50px">Кнопки</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				<div class="modal fade" id="Modal_add_work" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header bg-primary">
+								<button type="button" class="close add_work_close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h5 class="modal-title" id="myModalLabel1">Добавить наряд</h5>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div id="div_date" class="form-group col-xs-6">
+										<label class="control-label" for="work_date">Дата</label>
+										<input type="date" class="form-control" id="work_date" placeholder="Описание">
+									</div>
+									<div id="div_ls" class="form-group col-xs-6">
+										<label class="control-label" for="work_ls">Л.С</label>
+										<input type="number" class="form-control" id="work_ls" placeholder="Л.С">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										<p><b>Вид Технологии</b></p>
+										<div class="input-group">
+											<select id="add_sel_tehno" class="form-control">
+											
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										<p><b>Вид работ</b></p>
+										<div class="input-group">
+											<select id="add_sel" class="form-control">
+											
+											</select>
+											<span class="input-group-btn">
+												<button id="add_ball_for_ls" type="button" class="btn btn-info">+</button>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										<table id="scores_for_add" class="table">
+											<thead>
+												<tr>
+													<th>Проделанная работ</th>
+													<th width="30px">Баллы</th>
+												</tr>
+											</thead>
+											<tfoot>
+												<tr>
+													<th>Итого</th>
+													<th id="summ"></th>
+												</tr>
+											</tfoot>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button id="add_save_work" type="button" class="btn btn-primary">Сохранить</button>
+									<button type="button" class="btn btn-danger add_work_close">Закрыть</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="technology_tab">
+				<button type="button" id="technology_add_but" class="btn btn-default">
+					<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+				</button>
+				<button id="addTehno" type="button" class="btn btn-primary">Добавить столбец</button>				
+				<div id="div_add_technology">
+					<div class="form-group">
+						<label for="technology_desc">Описание</label>
+						<input type="text" class="form-control" id="technology_desc" placeholder="Описание">
+					</div>
+					<button type="button" id="technology_add" class="btn btn-default navbar-btn" data-toggle="modal">Дабавить</button>
+				</div>
+				<div id="div_edit_technology">
+					<div id="edit_id_technology"></div>
+					<div class="form-group">
+						<label for="technology_edit_desc">Описание</label>
+						<input type="text" class="form-control" id="technology_edit_desc" placeholder="Описание">
+					</div>
+					<button id="edit_save_technology" type="button" class="btn btn-primary">Сохранить</button>
+				</div>
+				<!-- Table -->
+				<table id="technology_scores_table" class="table">
+					<thead>
+						<tr>
+							<th>Описание</th>
+							<th width="50px">Кнопки</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<!--Баллы-->
+			<div class="tab-pane" id="scores_tab">
+				<button type="button" id="buttonqqq" class="btn btn-default">
+					<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+				</button>
+				<div id="div_add_ball">
+					<div class="form-group">
+						<label for="desc">Описание</label>
+						<input type="text" class="form-control" id="desc" placeholder="Описание">
+					</div>
+					<div class="form-group">
+						<label for="ball">Баллы</label>
+						<input type="number" class="form-control" id="ball" placeholder="Баллы">
+					</div>
+					<button type="button" id="add" class="btn btn-default navbar-btn" data-toggle="modal">Дабавить</button>
+				</div>
+				<div id="div_edit_ball">
+					<div id="edit_id"></div>
+					<div class="form-group">
+						<label for="edit_desc">Описание</label>
+						<input type="text" class="form-control" id="edit_desc" placeholder="Описание">
+					</div>
+					<div class="form-group">
+						<label for="edit_ball">Баллы</label>
+						<input type="number" class="form-control" id="edit_ball" placeholder="Баллы">
+					</div>
+					<button id="edit_save_ball" type="button" class="btn btn-primary">Сохранить</button>
+				</div>
+				<!-- Table -->
+				<table id="scores" class="table">
+					<thead>
+						<tr>
+							<th>Описание</th>
+							<th width="30px">Баллы</th>
+							<th width="50px">Кнопки</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<!--Конец Баллы-->	
+		</div>
+	</div>
+<!--Конец Контент-->
+	<script type="text/javascript">
+	</script>
+</body>
+</html>
