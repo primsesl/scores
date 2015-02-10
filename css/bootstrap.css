@@ -1299,11 +1299,17 @@ mark,
   background-color: #fcf8e3;
   padding: .2em;
 }
+
+.text-middle{
+	vertical-align: middle;
+}
+
 .text-left {
   text-align: left;
 }
 .text-right {
   text-align: right;
+  vertical-align: middle;
 }
 .text-center {
   text-align: center;
@@ -4735,7 +4741,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   text-align: center;
   white-space: nowrap;
   vertical-align: baseline;
-  border-radius: .25em;
+  border-radius: .24em;
 }
 a.label:hover,
 a.label:focus {

@@ -16,7 +16,8 @@
 		 var database = speckyboy.init.db;
 		 database.transaction(function(tx){
 			tx.executeSql("CREATE TABLE IF NOT EXISTS balls (id INTEGER PRIMARY KEY ASC, desc VARCHAR, ball INT)", []);
-			tx.executeSql("CREATE TABLE IF NOT EXISTS work (id INTEGER PRIMARY KEY ASC, date VARCHAR, ls VARCHAR, desc VARCHAR, ball INT)", []);
+			tx.executeSql("CREATE TABLE IF NOT EXISTS work (id INTEGER PRIMARY KEY ASC, date VARCHAR, ls VARCHAR, desc VARCHAR, ball INT, tehno VARCHAR(35))", []);
+			tx.executeSql("CREATE TABLE IF NOT EXISTS tehno (id INTEGER PRIMARY KEY ASC, desc VARCHAR, num INT)", []);
 		 });
 	}
 	
@@ -26,13 +27,6 @@
 		database.transaction(function(tx){
 			 tx.executeSql("INSERT INTO balls (desc, ball) VALUES (?,?)", [desc,ball],
 			 speckyboy.init.getBall());
-		});
-	}
-	speckyboy.init.addTehno = function(date, ls, desc, count){
-		var database = speckyboy.init.db;
-		database.transaction(function(tx){
-			tx.executeSql("ALTER TABLE work ADD tehno VARCHAR(35)",[]);
-			tx.executeSql("CREATE TABLE IF NOT EXISTS tehno (id INTEGER PRIMARY KEY ASC, desc VARCHAR, num INT)", []);
 		});
 	}
 	
@@ -300,7 +294,7 @@
 	}
 	speckyboy.init.getWork = function(){
 		var database = speckyboy.init.db;
-			$table1 = $("#work tbody");
+			$table1 = $("#work");
 			$table1.html('');
 			database.transaction(function(tx){
 				tx.executeSql("SELECT * FROM work ORDER BY date ASC", [], function(tx,result){
@@ -308,6 +302,13 @@
 					for (var il=0; il < result.rows.length; il++) {
 						todo_id = result.rows.item(il).id;
 						todo_date = result.rows.item(il).date;
+						var myDate = new Date(todo_date);
+						var days = ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+						dn = myDate.format("dddd");
+						mon = myDate.format("mmmm");
+						day = myDate.format("dd");
+						yr = myDate.format("yyyy");
+
 						todo_ls = result.rows.item(il).ls;
 						//todo_desc = result.rows.item(il).desc;
 						todo_desc = show_desc(result.rows.item(il).desc);
@@ -316,15 +317,28 @@
 						total_work = total_work + parseFloat(todo_ball);
 						$table1.append(
 							'<tr id="row_'+todo_id+'" data-id="'+todo_id+'">'+
-								'<td id="td_desc_'+todo_id+'">'+ todo_date+'</td>'+
-								'<td>'+ todo_ls+'</td>'+
-								'<td>'+ todo_teh+todo_desc+'</td>'+
-								'<td>'+ todo_ball+'</td>'+
-								'<td>'+
-								'<button type="button" class="del btn btn-default btn-xs"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></button>'+
+								'<td style="width: 100px; vertical-align: middle;">'+
+								'<div class="tadcal">'+
+								'<div id="mon_'+todo_id+'" class="dn label-warning">'+dn+'</div>'+
+								'<div>'+day+' '+mon+'</div>'+
+								'<div class="y">'+yr+'<div class="balss text-right"><span class="label label-info">'+todo_ball+'</span></div></div>'+
+								'</div>'+
+								' </td>'+
+								'<td id="td_desc_'+todo_id+'">'+
+								'<h4>'+ todo_ls+'</h4>'+
+								''+
+								'<p>'+ todo_teh+todo_desc+'</p>'+
 								'</td>'+
-							'</tr>');
-
+								'<td style="vertical-align: middle;" class="text-right text-nowrap">'+
+								'<button type="button" class="del btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash"></span></button>'+
+								'</td>');
+						if(myDate.getDay() == 0){
+							console.log(myDate.getDay());
+							$("#mon_"+todo_id).addClass("mond").removeClass("dn");
+						}else if(myDate.getDay() == 1){
+							console.log(myDate.getDay());
+							$("#mon_"+todo_id).addClass("mond").removeClass("dn");
+						}
 					}
 					$('#total_s').html(total_work.toFixed(2));
 				});
@@ -337,9 +351,6 @@
 	//Конец Наряды
 
 	
-    $("#addTehno").click(function() {
-		speckyboy.init.addTehno();
-    });
 	
     $("#buttonqqq").click(function() {
 		if($( "#div_edit_ball" ).css('display') == 'block'){
@@ -383,15 +394,17 @@
 	
 
 	$('.navbar-collapse li').click(function() {
-		$ddd = $(this).data('id');
+		$id = $(this).data('id');
 		$('.navbar-collapse').collapse('hide');
-		
-		if($ddd != 'settings'){
-			
+		if($id != 'settings_tab'){
 			$("#div_add_ball").hide('blind', {}, 500, '' );
 			$("#div_edit_ball").hide('blind', {}, 500, '' );
 			$("#buttonqqq span").addClass("glyphicon-chevron-down").removeClass("glyphicon-chevron-up");
 		}
+		if($id == 'technology_tab'){
+			speckyboy.init.getTechnology();
+		}
+		
 	});
 	$( ".add_close" ).click(function() {
 		$('#Modal_add').modal('hide'); 

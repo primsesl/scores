@@ -4,16 +4,72 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Баллы</title>
+<link href="css/bootstrap.css" rel="stylesheet">
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/jquery.ui.datepicker-ru.min.js"></script>
 <script src="js/bootstrap.js"></script>
+<script src="js/DateFormat.js"></script>
 <script src="js/function.js"></script>
-<link href="css/jquery-ui.css" rel="stylesheet">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/bootstrap-theme.min.css" rel="stylesheet">
 </head>
-
+<style>
+	.tadcal{
+		width: 100px; 
+		border: #337ab7 solid 1px;
+		height: 70px;
+		text-align: center;
+		border-radius: .25em;
+		
+	}
+	.balss{
+		position: relative;
+		top: -28px;
+		left: 0px;
+		color: #31708f;
+		display: block;
+		font-size: 100%;
+	}
+	.tadcal .dn{
+		width: 100%; 
+		padding: .2em .6em .3em;
+		font-size: 95%;
+		font-weight: bold;
+		line-height: 1;
+		height: 19px;
+		color: #ffffff;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: baseline;
+		text-transform: uppercase;
+	}
+	.tadcal .mond{
+		width: 100%; 
+		padding: .2em .6em .3em;
+		font-size: 80%;
+		font-weight: bold;
+		line-height: 1;
+		height: 19px;
+		color: #ffffff;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: baseline;
+		text-transform: uppercase;
+	}
+	.tadcal div:nth-child(2){
+		font-size: 90%;
+		font-weight: bold;
+		padding: .4em .6em .3em;
+	}
+	.tadcal .y{
+		display: block;
+		text-align: left;
+		font-size: 130%;
+		font-weight: bold;
+		color: #31708f;
+		padding: 0px;
+		vertical-align: bottom;
+	}
+</style>
 <body>
 <!--Навигация-->
 	<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -25,15 +81,16 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Учет баллов v 1.6</a>
+			<a class="navbar-brand" href="#">Учет баллов v 1.7</a>
 			<p id="total_s" class="navbar-text"></p>
 		</div>
    <div class="collapse navbar-collapse" id="example-navbar-collapse">
 		<ul id="tabs" class="nav navbar-nav" data-tabs="tabs">
-			<li class="active"><a href="#work_order_tab" data-toggle="tab">Наряды</a></li>
-			<li data-id="settings"><a href="#technology_tab" data-toggle="tab">Технологии</a></li>
-			<li data-id="settings"><a href="#scores_tab" data-toggle="tab">Баллы</a></li>
-			<li data-id="settings"><a href="#settings_tab" data-toggle="tab">Настройки</a></li>
+			<li data-id="work_order_tab" class="active"><a href="#work_order_tab" data-toggle="tab">Наряды</a></li>
+			<li data-id="technology_tab"><a href="#technology_tab" data-toggle="tab">Технологии</a></li>
+			<li data-id="scores_tab"><a href="#scores_tab" data-toggle="tab">Баллы</a></li>
+			<li data-id="settings_tab"><a href="#settings_tab" data-toggle="tab">Настройки</a></li>
+			<li data-id="import_export_tab"><a href="#import_export_tab" data-toggle="tab">Импорт\Экспорт</a></li>
 		</ul>
    </div>	</div>
 	</nav>	
@@ -45,21 +102,10 @@
 <!--Конец Вверх-->
 
 <!--Контент-->
-    <div class="container" role="main">
 		<div id="my-tab-content" class="tab-content">
 			<div class="tab-pane active" id="work_order_tab">
 				<button id="add_work" type="button" class="btn btn-primary">Добавить</button>
-				<p></p>
-					<table id="work" class="table table-bordered">
-						<thead>
-							<tr>
-								<th width="100px">Дата</th>
-								<th width="50px">Л.С</th>
-								<th>Вид работ</th>
-								<th width="30px">Балы</th>
-								<th width="50px">Кнопки</th>
-							</tr>
-						</thead>
+				<table id="work" class="table">
 						<tbody>
 						</tbody>
 					</table>
@@ -137,7 +183,6 @@
 				<button type="button" id="technology_add_but" class="btn btn-default">
 					<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 				</button>
-				<button id="addTehno" type="button" class="btn btn-primary">Добавить столбец</button>				
 				<div id="div_add_technology">
 					<div class="form-group">
 						<label for="technology_desc">Описание</label>
@@ -207,8 +252,9 @@
 				</table>
 			</div>
 			<!--Конец Баллы-->	
+			<div class="tab-pane" id="import_export_tab">
+			</div>
 		</div>
-	</div>
 <!--Конец Контент-->
 	<script type="text/javascript">
 	</script>
