@@ -349,7 +349,38 @@
 	}
 	
 	//Конец Наряды
-
+	
+	//Зкспорт импорт
+	$( "#button_export" ).click(function() {
+		speckyboy.init.export();
+	});
+	
+	speckyboy.init.export = function(){
+		var database = speckyboy.init.db;
+		var all_backup = [];
+		var work_arr = [];
+		database.transaction(function(tx){
+			tx.executeSql("SELECT * FROM work ORDER BY id ASC", [], function(tx,result){
+				for (var il=0; il < result.rows.length; il++) {
+					todo_id = result.rows.item(il).id;
+					todo_date = result.rows.item(il).date;
+					todo_ls = result.rows.item(il).ls;
+					todo_desc = $.parseJSON(result.rows.item(il).desc);
+					todo_ball = (result.rows.item(il).ball == null) ? 0 : result.rows.item(il).ball;
+					todo_teh = (result.rows.item(il).tehno == null) ? '' : result.rows.item(il).tehno;
+					total_work = total_work + parseFloat(todo_ball);
+					var marker = { id: todo_id, date: todo_date, ls: todo_ls, desc: todo_desc};
+					work_arr.push(marker);
+				}
+				all_backup.push({work: work_arr});
+				console.log(JSON.stringify(all_backup));
+			});
+				$("#export").val(JSON.stringify(all_backup));
+		});
+	}	
+	
+	//Конец Зкспорт импорт
+	
 	
 	
     $("#buttonqqq").click(function() {
