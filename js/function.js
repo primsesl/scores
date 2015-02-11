@@ -384,10 +384,13 @@
 	
 	
     $("#buttonqqq").click(function() {
-		if($( "#div_edit_ball" ).css('display') == 'block'){
+		$div_edit_ball = $( "#div_edit_ball" ).css('display');
+		$div_add_ball = $( "#div_add_ball" ).css('display');
+		
+		if($div_edit_ball == 'block'){
 			$( "#div_edit_ball" ).hide('blind', {}, 500, '' );
 		}
-		if($( "#div_add_ball" ).css('display') == 'block'){
+		if($div_add_ball == 'block'){
 			$( "#div_add_ball" ).hide('blind', {}, 500, '' );
 			$("#buttonqqq span").addClass("glyphicon-chevron-down").removeClass("glyphicon-chevron-up");
 		}else{
