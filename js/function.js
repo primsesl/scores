@@ -380,6 +380,26 @@
 	}	
 	
 	//Конец Зкспорт импорт
+	//Настройки
+	var $pb = $('.progress-bar');
+	function ff(rr, tt){
+			pr = rr/tt*100;
+			$pb.attr('data-transitiongoal', pr).progressbar({display_text: 'center'});
+			if(pr == 100){
+				return false;
+			}
+			rr++;
+		setTimeout(function(){
+			ff(rr, tt);
+		}, 10);
+		
+	}
+    $('#trigger-0').click(function() {
+	tt = 500;
+	rr = 0;
+			ff(rr, tt);
+    });
+	//Конец Настройки
 	
 	
 	

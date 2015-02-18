@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Баллы</title>
 <link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-progressbar-3.3.0.css" rel="stylesheet">
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/bootstrap.js"></script>
+<script src="js/bootstrap-progressbar.js"></script>
 <script src="js/DateFormat.js"></script>
 <script src="js/function.js"></script>
 </head>
@@ -255,6 +257,12 @@
 				</table>
 			</div>
 			<!--Конец Баллы-->	
+			<div class="tab-pane" id="settings_tab">
+				<button type="button" id="trigger-0">50</button>
+				<div class="progress">
+					<div class="progress-bar" role="progressbar"></div>
+				</div>
+			</div>
 			<div class="tab-pane" id="import_export_tab">
 				<button type="button" id="button_export" class="btn btn-primary btn-lg btn-block">Бэкап данных</button>
 				<br />
