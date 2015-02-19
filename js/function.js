@@ -382,22 +382,126 @@
 	//Конец Зкспорт импорт
 	//Настройки
 	var $pb = $('.progress-bar');
-	function ff(rr, tt){
-			pr = rr/tt*100;
+	var $pb_div = $('#pb_div');
+	var $pb_div1 = $('#pb_div1');
+	
+	speckyboy.init.total = function(){
+		var database = speckyboy.init.db;
+		var all_backup111 = [];
+		var work_arr11 = [];
+		database.transaction(function(tx){
+			tx.executeSql("SELECT * FROM work ORDER BY id ASC", [],
+			ff
+			);
+				//$("#export").val(JSON.stringify(all_backup));
+		});
+	}	
+	
+	function ttt(rrrr){
+				var database1 = speckyboy.init.db;
+				database1.transaction(function(tx){
+							//desc_arr[di].ball
+					//rrrr = todo_desc[i_desc].ball;
+					tx.executeSql("SELECT * FROM  balls WHERE desc LIKE '"+rrrr+"'", [], 
+						function(tx,result1){
+							for (var il1=0; il1 < result1.rows.length; il1++) {
+								desc_arr1 		= {};
+								desc_arr1.desc = rrrr;
+								desc_arr1.ball = result1.rows.item(il1).ball;
+								desc_arr_all.push(desc_arr1);
+							}
+				console.log(desc_arr_all);
+					});
+				});
+		
+	}
+function find(array, value) {
+	for(var i=0; i<array.length; i++) {
+		if (array[i].desc == value) return value;
+	}
+	return 'НЕТ СОВПАДЕНИЙ';
+}
+
+	function ff(tx, result, il){
+			tt =  result.rows.length-1
+			todo_desc = null;
+			//console.log(tx);
+			il = (il == null) ? 0 : il;
+			pr = il/tt*100;
+			todo_id = result.rows.item(il).id;
+			todo_date = result.rows.item(il).date;
+			todo_ls = result.rows.item(il).ls;
+			todo_desc = $.parseJSON(result.rows.item(il).desc);
+			todo_ball = (result.rows.item(il).ball == null) ? 0 : result.rows.item(il).ball;
+			todo_teh = (result.rows.item(il).tehno == null) ? '' : result.rows.item(il).tehno;
+			total_work = total_work + parseFloat(todo_ball);
+			//console.log(todo_id+" "+find(todo_desc, "ggggg"));
+			console.log("");
+			console.log(todo_id);
+			console.log(todo_desc);
+			console.log(spec);
+			
+				var desc_arr1 = [];
+				var desc_arr_all 	= [];
+			
+			for( var i_desc=0; i_desc < todo_desc.length; i_desc++){
+				for(var i=0; i<spec.length; i++) {
+					if (spec[i].desc == todo_desc[i_desc].desc){
+						todo_desc[i_desc].ball = spec[i].ball
+						
+					}
+				}
+				//ttt(desc_arr1, desc_arr_all, todo_desc[i_desc].desc)
+			}
+			work_upd(todo_id, todo_desc);
+			function work_upd(id, desc){
+				desc = JSON.stringify(desc);
+				//JSON.stringify(work_desc_arr_all)
+				//alert(id);
+				var database = speckyboy.init.db;
+				database.transaction(function(tx){
+					tx.executeSql('UPDATE work SET desc = ? WHERE id = ?', [desc, id]);
+				});
+				
+			}
+			console.log(todo_desc);
+
+			$pb_div.html(pr);
+			$pb_div1.html(il+" - "+tt);
 			$pb.attr('data-transitiongoal', pr).progressbar({display_text: 'center'});
-			if(pr == 100){
+			if(il == tt){
 				return false;
 			}
-			rr++;
+			il++;
 		setTimeout(function(){
-			ff(rr, tt);
-		}, 10);
+			rr = 0
+			ff(rr, result, il);
+		}, 1000);
 		
 	}
     $('#trigger-0').click(function() {
-	tt = 500;
-	rr = 0;
-			ff(rr, tt);
+		$pb.attr('data-transitiongoal', 0).progressbar({display_text: 'center'});
+		var database = speckyboy.init.db;
+		database.transaction(function(tx){
+			tx.executeSql("SELECT * FROM balls", [],
+				function(tx, result){
+					sql_result(result);
+			});
+		});
+		function sql_result(results) {
+			spec = null;
+			spec = [];
+			var len = results.rows.length;
+			for (var i=0; i < len; i++) {
+				//yyyy = {};
+				spec.push({desc: results.rows.item(i).desc, ball: results.rows.item(i).ball});
+			}
+		//console.log(spec);
+		setTimeout(function(){
+			speckyboy.init.total(spec);
+		}, 1000);
+		}
+
     });
 	//Конец Настройки
 	
