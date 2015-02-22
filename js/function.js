@@ -4,7 +4,8 @@
 	var db_name = "events_cal";
 	var db_version = "1.0";
     var db_description = "подсчет баллов";
-		
+    var version = "Учет баллов v 1.9";
+	$("#version").html(version);
 	var speckyboy = {}
 		speckyboy.init = {}
 		speckyboy.init.db = {}
@@ -244,14 +245,15 @@
 	
 	}
     function deleteClickWorkOn() {
-			$( ".del")
-				.click(function() {
+			$( ".del").click(function() {
             var $thisTr = $(this).parent().parent(),
                 timeID = $thisTr.data("id");
 				$tttt = $("#row_"+timeID);
-            speckyboy.init.deleteRow(timeID, 'work') 
-			speckyboy.init.getWork();
-			$tttt.fadeOut()
+			//speckyboy.init.getWork();
+			$tttt.fadeOut(function() {
+				speckyboy.init.deleteRow(timeID, 'work') 
+				$tttt.remove();
+			});
         })
     }
 	speckyboy.init.getBall_for_work = function(){
@@ -382,7 +384,6 @@
 	//Конец Зкспорт импорт
 	//Настройки
 	var $pb = $('.progress-bar');
-	var $pb_div = $('#pb_div');
 	var $pb_div1 = $('#pb_div1');
 	
 	speckyboy.init.total = function(){
@@ -391,7 +392,7 @@
 		var work_arr11 = [];
 		database.transaction(function(tx){
 			tx.executeSql("SELECT * FROM work ORDER BY id ASC", [],
-			ff
+			recalculation
 			);
 				//$("#export").val(JSON.stringify(all_backup));
 		});
@@ -422,12 +423,13 @@ function find(array, value) {
 	return 'НЕТ СОВПАДЕНИЙ';
 }
 
-	function ff(tx, result, il){
-			tt =  result.rows.length-1
+	function recalculation(tx, result, il, il1){
+			tt =  result.rows.length
 			todo_desc = null;
 			//console.log(tx);
 			il = (il == null) ? 0 : il;
-			pr = il/tt*100;
+			il1 = (il1 == null) ? 1 : il1;
+			pr = il1/tt*100;
 			todo_id = result.rows.item(il).id;
 			todo_date = result.rows.item(il).date;
 			todo_ls = result.rows.item(il).ls;
@@ -442,7 +444,7 @@ function find(array, value) {
 			console.log(spec);
 			
 				var desc_arr1 = [];
-				var desc_arr_all 	= [];
+				var desc_arr_all 	= [], count = 0;
 			
 			for( var i_desc=0; i_desc < todo_desc.length; i_desc++){
 				for(var i=0; i<spec.length; i++) {
@@ -451,32 +453,33 @@ function find(array, value) {
 						
 					}
 				}
+				count = count + todo_desc[i_desc].ball;
 				//ttt(desc_arr1, desc_arr_all, todo_desc[i_desc].desc)
 			}
-			work_upd(todo_id, todo_desc);
-			function work_upd(id, desc){
+			work_upd(todo_id, todo_desc, count);
+			function work_upd(id, desc, count){
 				desc = JSON.stringify(desc);
 				//JSON.stringify(work_desc_arr_all)
 				//alert(id);
 				var database = speckyboy.init.db;
 				database.transaction(function(tx){
-					tx.executeSql('UPDATE work SET desc = ? WHERE id = ?', [desc, id]);
+					tx.executeSql('UPDATE work SET desc = ?, ball = ? WHERE id = ?', [desc, count, id]);
 				});
 				
 			}
 			console.log(todo_desc);
 
-			$pb_div.html(pr);
-			$pb_div1.html(il+" - "+tt);
+			$pb_div1.html(il1+" - "+tt);
 			$pb.attr('data-transitiongoal', pr).progressbar({display_text: 'center'});
 			if(il == tt){
 				return false;
 			}
 			il++;
+			il1++;
 		setTimeout(function(){
 			rr = 0
-			ff(rr, result, il);
-		}, 1000);
+			recalculation(rr, result, il, il1);
+		}, 500);
 		
 	}
     $('#trigger-0').click(function() {
@@ -554,6 +557,9 @@ function find(array, value) {
 	$('.navbar-collapse li').click(function() {
 		$id = $(this).data('id');
 		$('.navbar-collapse').collapse('hide');
+		if($id == 'work_order_tab'){
+			speckyboy.init.getWork();
+		}
 		if($id != 'settings_tab'){
 			$("#div_add_ball").hide('blind', {}, 500, '' );
 			$("#div_edit_ball").hide('blind', {}, 500, '' );

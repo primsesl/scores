@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"  content="width=device-width, minimum-scale=1, maximum-scale=1">
 <title>Баллы</title>
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/bootstrap-progressbar-3.3.0.css" rel="stylesheet">
@@ -84,7 +84,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Учет баллов v 1.8</a>
+			<a class="navbar-brand" href="#" id="version"></a>
 			<p id="total_s" class="navbar-text"></p>
 		</div>
    <div class="collapse navbar-collapse" id="example-navbar-collapse">
@@ -217,6 +217,12 @@
 			</div>
 			<!--Баллы-->
 			<div class="tab-pane" id="scores_tab">
+				<button type="button" id="trigger-0" class="btn btn-default">Пересчитать</button>
+				<div id="pb_div1"></div>
+				<br />
+				<div class="progress">
+					<div class="progress-bar" role="progressbar"></div>
+				</div>
 				<button type="button" id="buttonqqq" class="btn btn-default">
 					<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 				</button>
@@ -258,12 +264,6 @@
 			</div>
 			<!--Конец Баллы-->	
 			<div class="tab-pane" id="settings_tab">
-				<button type="button" id="trigger-0">50</button>
-				<div id="pb_div"></div>
-				<div id="pb_div1"></div>
-				<div class="progress">
-					<div class="progress-bar" role="progressbar"></div>
-				</div>
 			</div>
 			<div class="tab-pane" id="import_export_tab">
 				<button type="button" id="button_export" class="btn btn-primary btn-lg btn-block">Бэкап данных</button>
