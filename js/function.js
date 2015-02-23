@@ -352,6 +352,24 @@
 	
 	//Конец Наряды
 	
+	//////////////////////////////////////////
+	$( "#na_s" ).click(function() {
+		
+		
+		$.ajax({
+			url: 'http://scores.primsesl.orisale.ru/pr.php',
+			success: function(data) {
+				$('#div_na_s').html(data);
+			}
+		});
+
+		
+	});
+
+	//////////////////////////////////////////
+
+
+	
 	//Зкспорт импорт
 	$( "#button_export" ).click(function() {
 		speckyboy.init.export();
