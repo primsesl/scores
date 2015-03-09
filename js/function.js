@@ -4,7 +4,7 @@
 	var db_name = "events_cal";
 	var db_version = "1.0";
     var db_description = "подсчет баллов";
-    var version = "Учет баллов v 1.9";
+    var version = "Учет баллов v 2.0";
 	$("#version").html(version);
 	var speckyboy = {}
 		speckyboy.init = {}
@@ -143,9 +143,22 @@
 				});
 			});
 		setTimeout(function(){
-			//technologyDeleteClickOn();
+			technologyDeleteClickOn();
 			//technologyEditClickOn();
 		}, 200);
+	}
+	function technologyDeleteClickOn(){
+			$( ".del_technology").click(function() {
+            var $thisTr = $(this).parent().parent(),
+                timeID = $thisTr.data("id");
+				$tttt = $("#row_technology_"+timeID);
+			//speckyboy.init.getWork();
+			$tttt.fadeOut(function() {
+				speckyboy.init.deleteRow(timeID, 'tehno') 
+				$tttt.remove();
+			});
+        })
+		
 	}
 	speckyboy.init.addTechnology = function(desc){
 		var database = speckyboy.init.db;
@@ -163,7 +176,7 @@
 	}
 	//Конец Технологии
 
-	//Наряды
+	//Наряды	
 	$( "#add_work" ).click(function() {
 		speckyboy.init.getBall_for_work();
 		speckyboy.init.getTechnology_for_work();
@@ -176,20 +189,6 @@
 		$('#summ').html('');
 		$('#Modal_add_work').modal('hide');
 	});
-	$("#add_ball_for_ls").click(function() {
-		$add_sel = $("#add_sel").find(':selected');
-		$add_sel_id 	= $add_sel.data('id');
-		$add_sel_ball 	= $add_sel.data('ball');
-		$add_sel_text 	= $add_sel.text();
-		
-		$("#scores_for_add tbody").append(
-			'<tr data-id="'+$add_sel_id+'">'+
-				'<td>'+ $add_sel_text+'</td>'+
-				'<td>'+ $add_sel_ball+'</td>'+
-			'</tr>');
-			
-		change_add();
-	});
 	$( "#add_save_work" ).click(function() {
 		var work_desc_arr = [];
 		var work_desc_arr_all 	= [],
@@ -197,21 +196,26 @@
 		var err 				= 0;
 		date = $('#work_date').val();
 		ls = $('#work_ls').val();
+		//speckyboy.init.getID();
 		if(date == ''){
 			$("#div_date").addClass("has-error");
+			//console.log("Заполни поле Дата");
 			err++;
 		}
 		if(ls == ''){
 			$("#div_ls").addClass("has-error");
+			//console.log("Заполни поле Лицевой счет");
 			err++;
 		}
 		if(err != 0){
 			return false;
 		}
-		$add_tehno = $("#add_sel_tehno").find(':selected');
+		$add_tehno = $("#add_sel_tehno").find(".dd-selected-text");
 		$add_tehno_id 	= $add_tehno.data('id');
 		$add_tehno_text 	= $add_tehno.text();
-
+		//console.log($add_tehno_text);
+		
+		//return false;
 		$("#scores_for_add tbody tr").each(function () {
 			work_desc_arr 		= {};
 			work_desc_arr.desc = $(this).find("td:nth-child(1)").text();
@@ -230,13 +234,8 @@
 	});
 
     function change_add() {
-		var work_desc_arr_all 	= [],
-			work_desc_arr 		= {},
-			count 				= 0;
+		var	count 				= 0;
 		$("#scores_for_add tbody tr").each(function () {
-			work_desc_arr.desc = $(this).find("td:nth-child(1)").text();
-			work_desc_arr.ball = $(this).find("td:nth-child(2)").text();
-			work_desc_arr_all.push(work_desc_arr);
 			count = count + parseFloat($(this).find("td:nth-child(2)").text());
 		});
 		
@@ -257,41 +256,183 @@
         })
     }
 	speckyboy.init.getBall_for_work = function(){
-		$("#add_sel").html('');
+		$('#add_sel_vr').ddslick('destroy');
 		var database = speckyboy.init.db;
 			database.transaction(function(tx){
 				tx.executeSql("SELECT * FROM balls ORDER BY desc ASC", [], function(tx,result){
-					for (var i=0; i < result.rows.length; i++) {
-						todo_id = result.rows.item(i).id;
-						todo_desc = result.rows.item(i).desc;
-						todo_ball = result.rows.item(i).ball;
-						$("#add_sel").append(
-								'<option data-id="'+todo_id+'" data-ball="'+todo_ball+'">'+ todo_desc+'</option>');
-
-					}
+					f_get_ball1(result);
 				});
 			});
 	}
+	
+	speckyboy.init.getID = function(){
+		var database = speckyboy.init.db;
+			database.transaction(function(tx){
+				tx.executeSql("SELECT last_insert_rowid() as last FROM work");
+				var res = tx.getResults();
+					//console.log(res);
+			});
+	}
+	
+	
+	function f_get_ball1(result){
+		f_get_ball = null;
+		f_get_ball = [];
+		
+		for (var i=0; i < result.rows.length; i++) {
+			todo_id = result.rows.item(i).id;
+			todo_desc = result.rows.item(i).desc;
+			todo_ball = result.rows.item(i).ball;
+			var markerw = { text: todo_desc, value: todo_id, ball: todo_ball};
+			f_get_ball.push(markerw);
+
+		}
+		//console.log(JSON.stringify(ddBasic1))
+		$('#add_sel_vr').ddslick({
+			data: f_get_ball,
+			truncateDescription: true,
+			width: '100%',
+			selectText: "Баллы",
+			onSelected: function (data) {
+			
+				$("#scores_for_add tbody").append(
+					'<tr data-id="'+data.selectedData.value+'">'+
+						'<td>'+ data.selectedData.text+'</td>'+
+						'<td>'+ data.selectedData.ball+'</td>'+
+					'</tr>');
+					
+				change_add();
+				//console.log(data.selectedData);
+			}
+		});
+		//console.log(f_get_ball)
+	}	
+	
+	
 	speckyboy.init.getTechnology_for_work = function(){
-		$("#add_sel_tehno").html('');
+		//$("#add_sel_tehno").html('');
+		$('#add_sel_tehno').ddslick('destroy');
+		var ddBasic1 = [];
 		var database = speckyboy.init.db;
 			database.transaction(function(tx){
 				tx.executeSql("SELECT * FROM tehno ORDER BY desc ASC", [], function(tx,result){
-					for (var i=0; i < result.rows.length; i++) {
-						todo_id = result.rows.item(i).id;
-						todo_desc = result.rows.item(i).desc;
-						$("#add_sel_tehno").append(
-								'<option data-id="'+todo_id+'">'+ todo_desc+'</option>');
-
-					}
+					f_get_tehno(result);
 				});
 			});
+		
 	}
+	function f_get_tehno(result){
+		ddBasic1 = null;
+		ddBasic1 = [];
+		
+		for (var i=0; i < result.rows.length; i++) {
+			todo_id = result.rows.item(i).id;
+			todo_desc = result.rows.item(i).desc;
+			var markerw = { text: todo_desc, value: todo_id};
+			ddBasic1.push(markerw);
+
+		}
+		//console.log(JSON.stringify(ddBasic1))
+		$('#add_sel_tehno').ddslick({
+			data: ddBasic1,
+			width: '100%',
+			selectText: "---------",
+			onSelected: function (data) {
+				//console.log(data.selectedData);
+			}
+		});
+		//console.log(ddBasic1)
+	}	
 	speckyboy.init.addWork = function(date, ls, desc, count, tehno){
 		var database = speckyboy.init.db;
 		database.transaction(function(tx){
-			 tx.executeSql("INSERT INTO work (date, ls, desc, ball, tehno) VALUES (?,?,?,?,?)", [date, ls, desc, count, tehno],
-			 speckyboy.init.getWork());
+			tx.executeSql("INSERT INTO work (date, ls, desc, ball, tehno) VALUES (?,?,?,?,?)", [date, ls, desc, count, tehno],
+			function( transaction, results ){
+			
+				todo_id = results.insertId;
+				todo_date = date;
+				var myDate = new Date(todo_date);
+				var days = ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+				dn = myDate.format("dddd");
+				mon = myDate.format("mmmm");
+				mon1 = myDate.format("mm");
+				day = myDate.format("dd");
+				yr = myDate.format("yyyy");
+				dataday = day+'.'+mon1+'.'+yr
+				todo_ls = ls;
+				//todo_desc = result.rows.item(il).desc;
+				todo_desc = show_desc(desc);
+				todo_ball = (count == null) ? 0 : count;
+				todo_teh = (tehno == null) ? '' : '<b>'+tehno+':</b> ';
+				total_work = total_work + parseFloat(todo_ball);
+				var t = $table1.find('[data-day="'+dataday+'"]').length-1;
+				$table1.find('[data-day="'+dataday+'"]').each(function (index, domEle) {
+					if (t == index){
+						$(this).after(
+							'<tr id="row_'+todo_id+'" data-id="'+todo_id+'" data-day="'+dataday+'">'+
+								'<td style="width: 100px; vertical-align: middle;">'+
+								'<div class="tadcal">'+
+								'<div id="mon_'+todo_id+'" class="dn label-warning">'+dn+'</div>'+
+								'<div>'+day+' '+mon+'</div>'+
+								'<div class="y">'+yr+'<div class="balss text-right"><span class="label label-info">'+todo_ball+'</span></div></div>'+
+								'</div>'+
+								' </td>'+
+								'<td id="td_desc_'+todo_id+'">'+
+								'<h4>'+ todo_ls+'</h4>'+
+								''+
+								'<p>'+ todo_teh+todo_desc+'</p>'+
+								'</td>'+
+								'<td style="vertical-align: middle;" class="text-right text-nowrap">'+
+								'<button type="button" class="del btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash"></span></button>'+
+								'</td>');
+						if(myDate.getDay() == 0){
+							//console.log(myDate.getDay());
+							$("#mon_"+todo_id).addClass("mond").removeClass("dn");
+						}else if(myDate.getDay() == 1){
+							//console.log(myDate.getDay());
+							$("#mon_"+todo_id).addClass("mond").removeClass("dn");
+						}
+						//console.log($(this));
+					}
+				
+				});
+				if(t == -1){
+					$table1.append(
+						'<tr id="row_'+todo_id+'" data-id="'+todo_id+'" data-day="'+dataday+'">'+
+							'<td style="width: 100px; vertical-align: middle;">'+
+							'<div class="tadcal">'+
+							'<div id="mon_'+todo_id+'" class="dn label-warning">'+dn+'</div>'+
+							'<div>'+day+' '+mon+'</div>'+
+							'<div class="y">'+yr+'<div class="balss text-right"><span class="label label-info">'+todo_ball+'</span></div></div>'+
+							'</div>'+
+							' </td>'+
+							'<td id="td_desc_'+todo_id+'">'+
+							'<h4>'+ todo_ls+'</h4>'+
+							''+
+							'<p>'+ todo_teh+todo_desc+'</p>'+
+							'</td>'+
+							'<td style="vertical-align: middle;" class="text-right text-nowrap">'+
+							'<button type="button" class="del btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash"></span></button>'+
+							'</td>');
+					if(myDate.getDay() == 0){
+						//console.log(myDate.getDay());
+						$("#mon_"+todo_id).addClass("mond").removeClass("dn");
+					}else if(myDate.getDay() == 1){
+						//console.log(myDate.getDay());
+						$("#mon_"+todo_id).addClass("mond").removeClass("dn");
+					}
+					//console.log($(this));
+				}
+					
+				setTimeout(function(){
+					deleteClickWorkOn();
+				}, 200);
+
+				// Execute the success callback,
+				// passing back the newly created ID.
+				//console.log(results.insertId);
+			});
+			 //speckyboy.init.getWork());
 		});
 	}
 	speckyboy.init.getWork = function(){
@@ -308,8 +449,10 @@
 						var days = ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
 						dn = myDate.format("dddd");
 						mon = myDate.format("mmmm");
+						mon1 = myDate.format("mm");
 						day = myDate.format("dd");
 						yr = myDate.format("yyyy");
+						dataday = day+'.'+mon1+'.'+yr
 
 						todo_ls = result.rows.item(il).ls;
 						//todo_desc = result.rows.item(il).desc;
@@ -318,7 +461,7 @@
 						todo_teh = (result.rows.item(il).tehno == null) ? '' : '<b>'+result.rows.item(il).tehno+':</b> ';
 						total_work = total_work + parseFloat(todo_ball);
 						$table1.append(
-							'<tr id="row_'+todo_id+'" data-id="'+todo_id+'">'+
+							'<tr id="row_'+todo_id+'" data-id="'+todo_id+'" data-day="'+dataday+'">'+
 								'<td style="width: 100px; vertical-align: middle;">'+
 								'<div class="tadcal">'+
 								'<div id="mon_'+todo_id+'" class="dn label-warning">'+dn+'</div>'+
@@ -393,7 +536,7 @@
 					work_arr.push(marker);
 				}
 				all_backup.push({work: work_arr});
-				console.log(JSON.stringify(all_backup));
+				console.log(all_backup);
 			});
 				$("#export").val(JSON.stringify(all_backup));
 		});
